@@ -785,13 +785,5 @@ except Exception as e:
 # --- BOTÓN DE FINALIZACIÓN OPTIMIZADO ---
 st.divider()
 
-# Usamos un contenedor para separar la lógica
-if st.button("🚀 FINALIZAR ANÁLISIS"):
-    # Ejecutamos solo las animaciones visuales
-    st.balloons() 
-    
-    # Usamos un mensaje simple en lugar de volver a calcular todo
-    st.success("✅ Reporte finalizado con éxito.")
-    
-    # Tip: No pongas cálculos pesados dentro del 'if st.button'
-    # Solo pon las consecuencias visuales del botón.
+st.success("✅ Análisis Completo: ¡Gracias por usar la Herramienta de Análisis Laboral!")
+st.balloons()
