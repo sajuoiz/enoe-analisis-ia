@@ -4,29 +4,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-import streamlit as st
-
-# Configuración de página
-st.set_page_config(page_title="Samuel Juárez Ortiz | Data Scientist", layout="wide")
-
-# Inyectar el CSS que diseñamos
-with open("style.css") as f:
-    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_status=True)
-
-# Crear el "Hero Section" con HTML dentro de Streamlit
-st.markdown("""
-    <section id="hero">
-        <div class="hero-content">
-            <h1>Samuel Juárez Ortiz</h1>
-            <p class="subtitle">Científico de Datos | Especialista en Microdatos Económicos</p>
-            <p class="description">
-                Transformando datos complejos en decisiones estratégicas. Mi enfoque combina econometría y Machine Learning.
-            </p>
-        </div>
-    </section>
-""", unsafe_allow_status=True)
-
-# Continúa con el resto de tu código de gráficas...
 
 st.set_page_config(page_title="Análisis ENOE", layout="wide")
 
