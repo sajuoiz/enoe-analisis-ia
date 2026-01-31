@@ -185,18 +185,172 @@ col_f2.table(pd.DataFrame({
 }))
 
 # --- GRÁFICA 6: BRECHA SALARIAL ---
+#-------------------DISTRIBUCION SALARIAL POR SEXO (TECHO DE CRISTAL)---------------------
 st.divider()
-st.header("⚖️ Brecha de Ingresos")
-pob_o = df[df['clase2'] == 1].copy()
-dist_g = pob_o.groupby(['sex', 'ing7c'])['fac_tri'].sum().reset_index()
-n_ing = {1:'<1 SM', 2:'1-2 SM', 3:'2-3 SM', 4:'3-5 SM', 5:'>5 SM', 6:'Sin Ing', 7:'N/E'}
-dist_g['Rango'] = dist_g['ing7c'].map(n_ing)
-dist_g['Sexo'] = dist_g['sex'].map({1:'Hombres', 2:'Mujeres'})
+st.header("⚖️ La Brecha de Ingresos: Hombres vs. Mujeres")
 
-fig_sal = px.bar(dist_g, x='Rango', y='fac_tri', color='Sexo', barmode='group',
-                 color_discrete_map={'Hombres':'#3498db', 'Mujeres':'#e74c3c'})
-fig_sal.update_layout(template="plotly_white", yaxis_title="Personas")
-st.plotly_chart(fig_sal, use_container_width=True)
+# 1. PRIMERO: Definir la población ocupada (Esto evita el NameError)
+poblacion_ocupada = df[df['clase2'] == 1].copy()
+
+# 2. SEGUNDO: Calcular los promedios reales para las etiquetas
+stats_ingresos = poblacion_ocupada[poblacion_ocupada['ingocup'] < 999999].groupby('ing7c', observed=False).agg({
+    'fac_tri': 'sum',
+    'ingocup': 'mean'
+}).reset_index()
+
+# Diccionario base para los nombres
+nombres_base = {
+    1: 'Hasta 1 SM', 2: '1 a 2 SM', 3: '2 a 3 SM', 
+    4: '3 a 5 SM', 5: 'Más de 5 SM', 6: 'Sin ingresos', 7: 'No especificado'
+}
+
+# Crear etiquetas dinámicas con los montos reales
+etiquetas_dinamicas = {}
+for _, fila in stats_ingresos.iterrows():
+    rango_id = fila['ing7c']
+    nombre = nombres_base.get(rango_id, "Otro")
+    monto = fila['ingocup']
+    
+    if monto > 0:
+        etiquetas_dinamicas[rango_id] = f"{nombre}<br>(Avg: ${monto/1000:.1f}k)"
+    else:
+        etiquetas_dinamicas[rango_id] = nombre
+
+# 3. TERCERO: Agrupar por sexo para la gráfica
+dist_genero = poblacion_ocupada.groupby(['sex', 'ing7c'], observed=False)['fac_tri'].sum().reset_index()
+
+# Aplicar las etiquetas y nombres de sexo
+dist_genero['Rango'] = dist_genero['ing7c'].map(etiquetas_dinamicas)
+dist_genero['Sexo'] = dist_genero['sex'].map({1: 'Hombres', 2: 'Mujeres'})
+
+# 4. CUARTO: Crear la gráfica de Plotly
+fig_gen = go.Figure()
+
+for genero, color in zip(['Hombres', 'Mujeres'], ['#3498db', '#e74c3c']):
+    datos_subset = dist_genero[dist_genero['Sexo'] == genero]
+    fig_gen.add_trace(go.Bar(
+        x=datos_subset['Rango'],
+        y=datos_subset['fac_tri'],
+        name=genero,
+        marker_color=color,
+        text=[f"{v/1e6:.1f}M" for v in datos_subset['fac_tri']],
+        textposition='auto',
+        hovertemplate="<b>%{x}</b><br>Personas: %{y:,.0f}<extra></extra>"
+    ))
+
+fig_gen.update_layout(
+    title='Brecha Salarial con Ingresos Promedio Reales (ENOE 2024)',
+    xaxis_title='Rango de SM e Ingreso Promedio Detectado',
+    yaxis_title='Millones de Personas',
+    barmode='group',
+    template="plotly_white",
+    height=600,
+    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+)
+
+st.plotly_chart(fig_gen, use_container_width=True)
+
+#-------------FORMALES VS INFORMALES---------------------
+#----------------🛡️ ESTABILIDAD VS RIESGO: FORMALIDAD EN LA ÉLITE ----------------
+#----------------🛡️ ESTABILIDAD VS RIESGO: FORMALIDAD EN LA ÉLITE ----------------
+st.divider()
+st.header("🛡️ Estabilidad vs. Riesgo: Formalidad en la Élite")
+
+# 1. Filtrar hombres de la élite
+hombres_elite = df[
+    (df['sex'] == 1) & 
+    (df['ing7c'].isin([4, 5])) &
+    (df['clase2'] == 1)
+].copy()
+
+# 2. Procesar formalidad
+resumen_social = hombres_elite[hombres_elite['seg_soc'].isin([1, 2])].copy()
+dist_formalidad = resumen_social.groupby('seg_soc', observed=False)['fac_tri'].sum().reset_index()
+
+dist_formalidad['Estatus'] = dist_formalidad['seg_soc'].map({
+    1: 'Formal (Con Seg. Social)', 
+    2: 'Informal (Sin Seg. Social)'
+})
+
+# 3. Métricas rápidas
+total_v = dist_formalidad['fac_tri'].sum()
+formal_v = dist_formalidad[dist_formalidad['seg_soc'] == 1]['fac_tri'].sum()
+informal_v = dist_formalidad[dist_formalidad['seg_soc'] == 2]['fac_tri'].sum()
+
+col_f1, col_f2 = st.columns([2, 1])
+
+with col_f1:
+    fig_formal = go.Figure(go.Bar(
+        x=dist_formalidad['Estatus'],
+        y=dist_formalidad['fac_tri'],
+        marker_color=['#2ecc71', '#e74c3c'], 
+        text=[f"{(v/total_v)*100:.1f}%" for v in dist_formalidad['fac_tri']],
+        textposition='auto',
+    ))
+
+    fig_formal.update_layout(
+        title='Seguridad Social en Hombres de Altos Ingresos',
+        yaxis_title='Personas',
+        template='plotly_white',
+        height=400
+    )
+    st.plotly_chart(fig_formal, use_container_width=True)
+
+with col_f2:
+    st.write("### Resumen")
+    # AQUÍ ESTABA EL ERROR, YA CORREGIDO:
+    st.metric("Total Élite Masculina", f"{total_v/1e6:.2f}M")
+    st.metric("Tasa de Formalidad", f"{(formal_v/total_v)*100:.1f}%")
+    
+    st.info(f"Existen **{informal_v:,.0f}** hombres en este rango sin red de protección social.")
+
+
+#---------- HOMBRES MAYORES A 3SM SEGMENTADOS POR EDAD ----------
+#-------------------- 🏆 LA ÉLITE MASCULINA POR EDAD -----------------------
+st.divider()
+st.header("🏆 La Élite Masculina: ¿A qué edad alcanzan el éxito?")
+st.markdown("""
+Analizamos la distribución por edad de los hombres que ganan **más de 3 Salarios Mínimos**. 
+Este gráfico muestra cuándo ocurre el pico de ingresos en la vida del hombre mexicano.
+""")
+
+# 1. Filtrar hombres de la élite
+hombres_elite_edad = df[
+    (df['sex'] == 1) & 
+    (df['ing7c'].isin([4, 5])) &
+    (df['clase2'] == 1)
+].copy()
+
+# 2. Definir rangos de edad exactos
+bins = [20, 30, 40, 50, 100]
+labels = ['20-29 años', '30-39 años', '40-49 años', '50+ años']
+hombres_elite_edad['rango_edad'] = pd.cut(hombres_elite_edad['eda'], bins=bins, labels=labels, right=False)
+
+# 3. Agrupar por población expandida
+dist_edad_pnea = hombres_elite_edad.groupby('rango_edad', observed=False)['fac_tri'].sum().reset_index()
+
+# 4. Crear gráfica con Plotly
+fig_edad = go.Figure(go.Bar(
+    x=dist_edad_pnea['rango_edad'],
+    y=dist_edad_pnea['fac_tri'],
+    # Usamos un degradado de azul para denotar madurez profesional
+    marker_color=['#AED6F1', '#5DADE2', '#2E86C1', '#1B4F72'], 
+    text=[f"{v/1e3:.0f}k" if v < 1e6 else f"{v/1e6:.2f}M" for v in dist_edad_pnea['fac_tri']],
+    textposition='auto',
+))
+
+fig_edad.update_layout(
+    title='Hombres con Ingresos > 3 SM por Rango de Edad',
+    xaxis_title="Rango de Edad",
+    yaxis_title="Estimación Nacional (Personas)",
+    template='plotly_white',
+    height=500
+)
+
+st.plotly_chart(fig_edad, use_container_width=True)
+
+# 5. Análisis dinámico para el video
+max_rango = dist_edad_pnea.loc[dist_edad_pnea['fac_tri'].idxmax(), 'rango_edad']
 
 # --- RATIO FINAL ---
 st.divider()
@@ -205,6 +359,6 @@ muj_t = df[(df['sex'] == 2) & (df['eda'] >= 25) & (df['eda'] <= 40)]['fac_tri'].
 hom_e = df[(df['sex'] == 1) & (df['ing7c'].isin([4, 5])) & (df['clase2'] == 1)]['fac_tri'].sum()
 ratio = muj_t / hom_e
 
-st.metric("Ratio de Competencia", f"{ratio:.1f} a 1", "Mujeres por cada Hombre de Élite")
+st.metric("Ratio de Competencia", f"{ratio:.1f} a 1", "Mujeres por cada Hombre VIABLE ECONÓMICAMENTE")
 fig_r = go.Figure(go.Bar(x=[1, ratio], y=['Hombres Élite', 'Mujeres Target'], orientation='h', marker_color=['#3498db', '#e74c3c']))
 st.plotly_chart(fig_r, use_container_width=True)
