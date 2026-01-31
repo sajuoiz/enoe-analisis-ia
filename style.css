@@ -1,0 +1,180 @@
+:root {
+    --bg-color: #fcfcfc;
+    --text-color: #1a1a1a;
+    --accent-color: #2d3436; /* Gris carbón elegante */
+    --light-gray: #f0f0f0;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+}
+
+header {
+    padding: 2rem 5%;
+    background: white;
+    border-bottom: 1px solid var(--light-gray);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-weight: 600;
+    font-size: 1.5rem;
+    letter-spacing: -1px;
+}
+
+.links a {
+    text-decoration: none;
+    color: var(--text-color);
+    margin-left: 2rem;
+    font-size: 0.9rem;
+    font-weight: 400;
+    transition: opacity 0.3s;
+}
+
+.links a:hover {
+    opacity: 0.6;
+}
+
+#hero {
+    height: 80vh;
+    display: flex;
+    align-items: center;
+    padding: 0 10%;
+    background: linear-gradient(135deg, #ffffff 0%, #f1f2f6 100%);
+}
+
+.hero-content h1 {
+    font-size: 4rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    letter-spacing: -2px;
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    color: #636e72;
+    margin-bottom: 1.5rem;
+}
+
+.description {
+    max-width: 600px;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+    color: #2d3436;
+}
+
+.btn {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: var(--accent-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: transform 0.3s;
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+}
+
+#analysis {
+    padding: 5rem 5%;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.section-title h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+/* El truco del Iframe responsivo */
+.iframe-container {
+    position: relative;
+    width: 100%;
+    height: 900px; /* Ajusta según el largo de tu análisis */
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+    background: white;
+}
+
+.iframe-container iframe {
+    width: 100%;
+    height: 100%;
+}
+
+footer {
+    padding: 3rem;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #636e72;
+    background: var(--light-gray);
+}
+
+/* --- AJUSTES PARA CELULARES Y TABLETS --- */
+
+@media (max-width: 768px) {
+    #hero {
+        height: auto;
+        padding: 5rem 5%;
+        text-align: center;
+    }
+
+    .hero-content h1 {
+        font-size: 2.5rem; /* Letra más pequeña en móvil */
+        letter-spacing: -1px;
+    }
+
+    .description {
+        margin: 0 auto 2rem auto;
+    }
+
+    nav {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .links a {
+        margin: 0 0.5rem;
+    }
+
+    /* Ajuste del contenedor de datos */
+    .iframe-container {
+        height: 600px; /* Reducimos la altura en móvil para facilitar el scroll */
+        border-radius: 0; /* Quitamos bordes redondeados para ganar espacio */
+    }
+}
+
+/* Ajuste para pantallas muy pequeñas (iPhone SE, etc.) */
+@media (max-width: 480px) {
+    .hero-content h1 {
+        font-size: 2rem;
+    }
+    
+    .btn {
+        width: 100%; /* Botón ancho total para facilitar el clic con el pulgar */
+        text-align: center;
+    }
+}
