@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
+import plotly.graph_objects as go # Añade este import arriba
 
 st.set_page_config(page_title="Análisis ENOE", layout="wide")
 
@@ -126,66 +127,66 @@ with col2:
     st.warning("⚠️ **Disminuyen la probabilidad:** Aquí notarás que ser mujer y, sobre todo, 'mujer con hijos' tiene un impacto negativo severo en la probabilidad de trabajar.")
 
 #-----------------PROBABILIDAD CON HIJOS-----------------
+#-----------------PROBABILIDAD CON HIJOS OPTIMIZADA-----------------
 st.divider()
 st.header("📉 Simulador: El 'Impuesto' a la Maternidad")
-st.markdown("""
-Esta herramienta utiliza los coeficientes de nuestra Regresión Logística para predecir la probabilidad 
-de que una persona trabaje, comparando hombres vs. mujeres según su carga familiar.
-""")
 
-# --- CONTROLES INTERACTIVOS EN LA BARRA LATERAL O COLUMNAS ---
-st.subheader("Configura el Perfil del Individuo")
+# Controles en columnas para que ocupen menos espacio vertical
 col_sim1, col_sim2, col_sim3 = st.columns(3)
-
 with col_sim1:
-    edad_input = st.slider("Edad", 15, 80, 35)
+    edad_input = st.number_input("Edad", 15, 80, 30) # number_input es más rápido que slider
 with col_sim2:
-    esc_input = st.slider("Años de Escolaridad", 0, 24, 12, help="12 años es Preparatoria")
+    esc_input = st.number_input("Años de Escolaridad", 0, 24, 12)
 with col_sim3:
-    entorno_urbano = st.checkbox("¿Vive en zona Urbana?", value=True)
+    entorno_urbano = st.toggle("¿Zona Urbana?", value=True) # Toggle es más moderno
 
-# --- LÓGICA DE CÁLCULO ---
-# Extraemos coeficientes del modelo entrenado previamente
+# Lógica de cálculo ultra-veloz (Vectorizada)
+hijos_rango = np.arange(0, 7)
 c = dict(zip(features, modelo_pnea.coef_[0]))
 intercepto = modelo_pnea.intercept_[0]
 
-def calcular_prob(es_mujer, n_hij):
-    z = (intercepto + 
-         c['eda'] * edad_input + 
-         c['eda_2'] * (edad_input**2) + 
-         c['es_mujer'] * es_mujer + 
-         c['mujer_con_hijos'] * (es_mujer * n_hij) + 
-         c['anios_esc'] * esc_input + 
-         c['es_urbano'] * (1 if entorno_urbano else 0) + 
-         c['tiene_pareja'] * 1) # Asumimos pareja fija para la comparación
+def obtener_probs(es_mujer):
+    # Calculamos el valor base (lo que no cambia con los hijos)
+    z_base = (intercepto + 
+              c['eda'] * edad_input + 
+              c['eda_2'] * (edad_input**2) + 
+              c['es_mujer'] * es_mujer + 
+              c['anios_esc'] * esc_input + 
+              c['es_urbano'] * (1 if entorno_urbano else 0) + 
+              c['tiene_pareja'] * 1)
+    
+    # Sumamos el efecto de los hijos (es_mujer * n_hijos * coeficiente)
+    z = z_base + (c['mujer_con_hijos'] * (es_mujer * hijos_rango))
     return 1 / (1 + np.exp(-z))
 
-hijos_rango = np.arange(0, 6)
-prob_hombres = [calcular_prob(0, h) for h in hijos_rango]
-prob_mujeres = [calcular_prob(1, h) for h in hijos_rango]
+prob_hombres = obtener_probs(0)
+prob_mujeres = obtener_probs(1)
 
-# --- GRÁFICA ---
-fig_prob, ax_prob = plt.subplots(figsize=(10, 5))
-ax_prob.plot(hijos_rango, prob_hombres, marker='o', label='Hombres', linewidth=3, color='#1f77b4')
-ax_prob.plot(hijos_rango, prob_mujeres, marker='o', label='Mujeres', linewidth=3, color='#d62728')
+# --- GRÁFICA CON PLOTLY (Interactivad instantánea) ---
+fig = go.Figure()
 
-ax_prob.set_title(f'Probabilidad de trabajar (Perfil: {edad_input} años, {esc_input} años esc.)', fontsize=12)
-ax_prob.set_xlabel('Número de Hijos')
-ax_prob.set_ylabel('Probabilidad (0 a 1)')
-ax_prob.set_ylim(0, 1.05)
-ax_prob.grid(True, linestyle=':', alpha=0.7)
-ax_prob.legend()
+fig.add_trace(go.Scatter(x=hijos_rango, y=prob_hombres, name='Hombres',
+                         line=dict(color='#1f77b4', width=4), mode='lines+markers'))
 
-# Añadir anotación dinámica si hay brecha
-brecha_0 = prob_hombres[0] - prob_mujeres[0]
-ax_prob.annotate(f'Brecha inicial: {brecha_0:.1%}', 
-                 xy=(0, prob_mujeres[0]), xytext=(0.5, prob_mujeres[0]-0.2),
-                 arrowprops=dict(facecolor='black', shrink=0.05, width=1, headwidth=5))
+fig.add_trace(go.Scatter(x=hijos_rango, y=prob_mujeres, name='Mujeres',
+                         line=dict(color='#d62728', width=4), mode='lines+markers'))
 
-st.pyplot(fig_prob)
+fig.update_layout(
+    title=f'Probabilidad de trabajar (Perfil: {edad_input} años)',
+    xaxis_title='Número de Hijos',
+    yaxis_title='Probabilidad',
+    yaxis=dict(range=[0, 1.1]),
+    margin=dict(l=20, r=20, t=40, b=20),
+    height=400,
+    hovermode="x unified",
+    template="plotly_white"
+)
 
-# --- MENSAJE FINAL DE IMPACTO ---
-st.error(f"**Análisis:** Para una mujer con {edad_input} años, cada hijo adicional reduce su probabilidad de participar en la economía un **{abs(c['mujer_con_hijos']*100):.1f}%** (según el coeficiente del modelo).")
+st.plotly_chart(fig, use_container_width=True)
+
+# Mensaje de impacto dinámico
+brecha = (prob_hombres[0] - prob_mujeres[0]) * 100
+st.info(f"**Hallazgo clave:** Incluso sin hijos, existe una brecha inicial del **{brecha:.1f}%**. Con cada hijo, la probabilidad de la mujer cae, mientras que la del hombre se mantiene constante.")
 
 
 #----------EFECTOS MARGINALES PROMEDIO------------------
