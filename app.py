@@ -438,7 +438,7 @@ extrema volatilidad del rango 5.
 #----------------🛡️ ESTABILIDAD VS RIESGO: FORMALIDAD EN LA ÉLITE ----------------
 #----------------🛡️ ESTABILIDAD VS RIESGO: FORMALIDAD EN LA ÉLITE ----------------
 st.divider()
-st.header("🛡️ Estabilidad vs. Riesgo: Formalidad en la Élite")
+st.header("🛡️ Estabilidad vs. Riesgo: Formalidad en la cima")
 
 # 1. Filtrar hombres de la élite
 hombres_elite = df[
@@ -492,7 +492,7 @@ with col_f2:
 #---------- HOMBRES MAYORES A 3SM SEGMENTADOS POR EDAD ----------
 #-------------------- 🏆 LA ÉLITE MASCULINA POR EDAD -----------------------
 st.divider()
-st.header("🏆 La Élite Masculina: ¿A qué edad alcanzan el éxito?")
+st.header("🏆 La Élite Masculina: ¿A qué edad alcanzan la cima?")
 st.markdown("""
 Analizamos la distribución por edad de los hombres que ganan **más de 3 Salarios Mínimos**. 
 Este gráfico muestra cuándo ocurre el pico de ingresos en la vida del hombre mexicano.
