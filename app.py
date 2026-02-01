@@ -237,18 +237,14 @@ fig_cm = ff.create_annotated_heatmap(cm[::-1], x=['Pred: No', 'Pred: Sí'], y=['
 st.plotly_chart(fig_cm, use_container_width=True)
 
 # --- SECCIÓN: FALSOS POSITIVOS ---
-# --- SECCIÓN: FALSOS POSITIVOS (SIN HORAS TRABAJADAS) ---
+# --- SECCIÓN: FALSOS POSITIVOS (CON EDAD Y SIN HORAS) ---
 st.divider()
 st.header("🔍 Análisis de Falsos Positivos: El Techo de Cristal")
-st.markdown("""
-Los **Falsos Positivos** son personas que el modelo clasificó como 'Élite' por su perfil profesional, 
-pero que en la realidad no perciben esos ingresos.
-""")
 
 df_res = X_test.copy()
 df_res['real'], df_res['pred'] = y_test, y_pred
 
-# Identificar índices de Falsos Positivos (Predicho: Élite, Real: No Élite)
+# Identificar índices de Falsos Positivos
 indices_fp = df_res[(df_res['real'] == 0) & (df_res['pred'] == 1)].index
 fp_completos = df_pnea.loc[indices_fp].copy()
 
@@ -275,9 +271,10 @@ with col_tablas:
     # Tabla para Hombres
     st.write("**👨 Hombres (Falsos Positivos)**")
     st.table(pd.DataFrame({
-        "Métrica": ["Cantidad", "Escolaridad Prom.", "Hijos Prom."],
+        "Métrica": ["Cantidad", "Edad Promedio", "Escolaridad Prom.", "Hijos Prom."],
         "Valor": [
             f"{len(fp_h)}", 
+            f"{fp_h['eda'].mean():.1f} años" if not fp_h.empty else "0.0",
             f"{fp_h['anios_esc'].mean():.1f} años" if not fp_h.empty else "0.0", 
             f"{fp_h['n_hij'].mean():.1f}" if not fp_h.empty else "0.0"
         ]
@@ -286,18 +283,17 @@ with col_tablas:
     # Tabla para Mujeres
     st.write("**👩 Mujeres (Falsos Positivos)**")
     st.table(pd.DataFrame({
-        "Métrica": ["Cantidad", "Escolaridad Prom.", "Hijos Prom."],
+        "Métrica": ["Cantidad", "Edad Promedio", "Escolaridad Prom.", "Hijos Prom."],
         "Valor": [
             f"{len(fp_m)}", 
+            f"{fp_m['eda'].mean():.1f} años" if not fp_m.empty else "0.0",
             f"{fp_m['anios_esc'].mean():.1f} años" if not fp_m.empty else "0.0", 
             f"{fp_m['n_hij'].mean():.1f}" if not fp_m.empty else "0.0"
         ]
     }))
 
 st.info("""
-**Interpretación:** Analiza si las mujeres en este grupo tienen una escolaridad promedio mayor a la de los hombres. 
-De ser así, esto confirma que el mercado laboral requiere mayor preparación de las mujeres para otorgarles 
-la misma probabilidad de éxito que a los hombres, aunque la recompensa económica real no llegue.
+**Dato para tu video:** Si la edad promedio de las mujeres es mayor que la de los hombres en este grupo, estarías demostrando que incluso con **más años de experiencia y madurez**, las mujeres siguen siendo clasificadas como 'potencialmente exitosas' sin que se refleje en su cuenta bancaria.
 """)
 
 # --- GRÁFICA 6: BRECHA SALARIAL ---
