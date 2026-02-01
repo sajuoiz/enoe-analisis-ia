@@ -77,7 +77,26 @@ st.plotly_chart(fig_din, use_container_width=True)
 
 # --- GRÁFICA 2: COEFICIENTES ---
 st.divider()
-st.header("🧠 Modelo Predictivo e Impacto")
+st.header("🧠 Inteligencia Artificial: Regresión Logística")
+
+with st.expander("🔍 ¿Qué es este modelo y cómo funciona?"):
+    st.markdown("""
+    ### ¿Qué es la Regresión Logística?
+    A diferencia de una regresión lineal (que predice números como el precio de una casa), la **Regresión Logística** es un algoritmo de **clasificación**. Se utiliza para predecir la probabilidad de que una observación pertenezca a una de dos categorías (en este caso: *¿Debería estar empleado/a o no?*).
+
+    ### ¿Qué mide?
+    El modelo mide la relación entre una variable dependiente binaria (Empleabilidad) y múltiples variables independientes (Edad, Educación, Horas trabajadas, etc.).
+
+    ### ¿Cómo lo mide?
+    1. **Probabilidad Logística:** El modelo calcula una puntuación basada en los datos de entrada y la pasa por una función llamada **Sigmoide**.
+    2. **Función Sigmoide:** Esta función "aplasta" cualquier número para que el resultado siempre esté entre **0 y 1**, lo que interpretamos como una probabilidad.
+    3. **Límite de Decisión:** Por defecto, si la probabilidad es mayor a **0.5 (50%)**, el modelo clasifica a la persona como parte de la "Poblacion Empleada".
+
+    ### ¿Por qué es pertinente en este análisis?
+    La Regresión Logística no solo nos da una predicción, sino que nos permite calcular los Efectos Marginales Promedio. Esto nos dice, por ejemplo: *"Por cada año adicional de estudio, las probabilidades de pertenecer a la Población Empleada aumentan un X%"*.
+
+    > **Nota Estadística:** Es el modelo ideal cuando buscamos entender el impacto específico de factores sociales y demográficos en una oportunidad de vida.
+    """)
 with st.expander("Ver detalles técnicos del modelo"):
     st.write("✅ Regresión Logística entrenada con factor de estratificación.")
 
