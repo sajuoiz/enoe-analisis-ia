@@ -288,7 +288,7 @@ with col_tablas:
             len(fp_h), 
             get_mean(fp_h, col_esc), 
             get_mean(fp_h, col_hij),
-            get_mean(fp_h, col_hrs)
+            
         ]
     }))
 
@@ -300,7 +300,7 @@ with col_tablas:
             len(fp_m), 
             get_mean(fp_m, col_esc), 
             get_mean(fp_m, col_hij),
-            get_mean(fp_m, col_hrs)
+            
         ]
     }))
 
