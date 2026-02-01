@@ -138,20 +138,13 @@ st.subheader("🔬 Interpretación del Impacto de las Variables")
 
 with st.expander("🔍 ¿Qué son los Efectos Marginales y en qué se diferencian de los Odds Ratio?"):
     st.markdown("""
-    Al analizar un modelo de regresión logística, existen dos formas principales de entender cómo una variable (como la educación o la edad) influye en la probabilidad de ser parte de la élite:
-
-    #### 1. Odds Ratio (Razón de Momios)
-    Es una medida de **probabilidad relativa**. Nos dice cuánto más (o menos) probable es pertenecer a la élite al cambiar una característica, en comparación con no cambiarla.
-    * **Ejemplo:** Si el Odds Ratio de 'Educación' es **1.20**, significa que por cada año extra de estudio, las probabilidades de éxito económico aumentan un **20%** respecto a la probabilidad anterior.
-    * **Limitación:** Es un concepto abstracto que a veces es difícil de visualizar en la vida real.
-
-    #### 2. Efectos Marginales Promedio (AME)
+    Al analizar un modelo de regresión logística, la mejor forma de hacerlo es con los EMP: **Efectos Marginales Promedio (AME)**.
+                
+    #### Efectos Marginales Promedio (AME)
     Es una medida de **probabilidad absoluta** (puntos porcentuales). Nos dice cuánto cambia la probabilidad real (de 0 a 100%) cuando una variable aumenta en una unidad.
-    * **Ejemplo:** Si el Efecto Marginal de 'Educación' es **0.05**, significa que, en promedio, un año más de estudio aumenta la probabilidad de ser élite en **5 puntos porcentuales**.
-    * **Ventaja:** Es mucho más intuitivo. Nos permite decir: *"Si una persona estudia la universidad, su probabilidad de ganar más de 5 SM sube un X%"*.
-
-    ### Diferencia Clave
-    Mientras que el **Odds Ratio** te habla de la "fuerza" de la relación, el **Efecto Marginal** te habla del "impacto real" en la probabilidad final. El Efecto Marginal es más útil para políticas públicas y toma de decisiones, porque se traduce directamente en personas y porcentajes tangibles.
+    * **Ejemplo:** Si el Efecto Marginal de 'Educación' es **0.05**, significa que, en promedio, un año más de estudio aumenta la probabilidad de ser Empleado en **5 puntos porcentuales**.
+    * **Ventaja:** Es mucho más intuitivo. Nos permite decir: *"Si una persona estudia la universidad, su probabilidad de ganar más sube un X%"*.
+   
     """)
 @st.cache_data
 def get_ame(X, y):
