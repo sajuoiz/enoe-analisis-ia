@@ -544,5 +544,5 @@ hom_e = df[(df['sex'] == 1) & (df['ing7c'].isin([4, 5])) & (df['clase2'] == 1)][
 ratio = muj_t / hom_e
 
 st.metric("Ratio de Competencia", f"{ratio:.1f} a 1", "Mujeres por cada Hombre VIABLE ECONÓMICAMENTE")
-fig_r = go.Figure(go.Bar(x=[1, ratio], y=['Hombres Élite', 'Mujeres Target'], orientation='h', marker_color=['#3498db', '#e74c3c']))
+fig_r = go.Figure(go.Bar(x=[1, ratio], y=['Hombres Estables', 'Mujeres Target'], orientation='h', marker_color=['#3498db', '#e74c3c']))
 st.plotly_chart(fig_r, use_container_width=True)
