@@ -237,7 +237,7 @@ fig_cm = ff.create_annotated_heatmap(cm[::-1], x=['Pred: No', 'Pred: Sí'], y=['
 st.plotly_chart(fig_cm, use_container_width=True)
 
 # --- SECCIÓN: FALSOS POSITIVOS ---
-# --- SECCIÓN: FALSOS POSITIVOS (CON EDAD Y SIN HORAS) ---
+# --- SECCIÓN: FALSOS POSITIVOS (CON EDAD Y ESTADO CIVIL) ---
 st.divider()
 st.header("🔍 Análisis de Falsos Positivos")
 
@@ -268,33 +268,43 @@ with col_graf:
 with col_tablas:
     st.subheader("Características Promedio")
     
+    # --- Lógica para calcular porcentajes de casados ---
+    # Asumimos que la columna se llama 'es_casado' (1=sí, 0=no)
+    def pct_casados(df):
+        if not df.empty and 'es_casado' in df.columns:
+            return f"{(df['es_casado'].mean() * 100):.1f}%"
+        return "N/D"
+
     # Tabla para Hombres
     st.write("**👨 Hombres (Falsos Positivos)**")
     st.table(pd.DataFrame({
-        "Métrica": ["Cantidad", "Edad Promedio", "Escolaridad Prom.", "Hijos Prom."],
+        "Métrica": ["Cantidad", "Edad Promedio", "Escolaridad", "Hijos Prom.", "Casados/Unión L."],
         "Valor": [
             f"{len(fp_h)}", 
             f"{fp_h['eda'].mean():.1f} años" if not fp_h.empty else "0.0",
             f"{fp_h['anios_esc'].mean():.1f} años" if not fp_h.empty else "0.0", 
-            f"{fp_h['n_hij'].mean():.1f}" if not fp_h.empty else "0.0"
+            f"{fp_h['n_hij'].mean():.1f}" if not fp_h.empty else "0.0",
+            pct_casados(fp_h)
         ]
     }))
 
     # Tabla para Mujeres
     st.write("**👩 Mujeres (Falsos Positivos)**")
     st.table(pd.DataFrame({
-        "Métrica": ["Cantidad", "Edad Promedio", "Escolaridad Prom.", "Hijos Prom."],
+        "Métrica": ["Cantidad", "Edad Promedio", "Escolaridad", "Hijos Prom.", "Casados/Unión L."],
         "Valor": [
             f"{len(fp_m)}", 
             f"{fp_m['eda'].mean():.1f} años" if not fp_m.empty else "0.0",
             f"{fp_m['anios_esc'].mean():.1f} años" if not fp_m.empty else "0.0", 
-            f"{fp_m['n_hij'].mean():.1f}" if not fp_m.empty else "0.0"
+            f"{fp_m['n_hij'].mean():.1f}" if not fp_m.empty else "0.0",
+            pct_casados(fp_m)
         ]
     }))
 
-st.info("""
-**Dato para tu video:** Es probable que para las mujeres en esta situación se vean orilladas a buscar pareja para poder tener un sustento económico. 
-        En el caso de los hombres, es mas probable que encuentren empleo mal pagado a pesar de sus circunstancias personales.
+st.warning("""
+**Análisis de Interseccionalidad:** Observa si el porcentaje de mujeres casadas en este grupo es mayor al de los hombres. 
+A menudo, el estado civil y la carga de cuidados en el hogar actúan como un 'impuesto' invisible que impide que 
+mujeres con perfiles de alta productividad alcancen la élite salarial.
 """)
 
 # --- GRÁFICA 6: BRECHA SALARIAL ---
