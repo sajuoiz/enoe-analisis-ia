@@ -192,10 +192,10 @@ with st.expander("🔍 Interpretación de la Matriz de Confusión"):
 
     ### Los 4 Cuadrantes de la Verdad:
     
-    1. **Verdaderos Positivos (Top-Right):** Personas que el modelo predijo correctamente como parte de la "élite".
-    2. **Verdaderos Negativos (Bottom-Left):** Personas que el modelo identificó correctamente como "no élite".
-    3. **Falsos Positivos (Error Tipo I):** El modelo predijo que alguien tendría éxito económico, pero en la realidad no es así.
-    4. **Falsos Negativos (Error Tipo II):** El modelo dijo que alguien no sería élite, cuando en realidad sí lo es.
+    1. **Verdaderos Positivos (Top-Right):** Personas que el modelo predijo correctamente como parte de la "Población Empleada".
+    2. **Verdaderos Negativos (Bottom-Left):** Personas que el modelo identificó correctamente como "no empleadas".
+    3. **Falsos Positivos (Error Tipo I):** El modelo predijo que alguien tendría empleo, pero en la realidad no es así.
+    4. **Falsos Negativos (Error Tipo II):** El modelo dijo que alguien no sería parte de la Población Empleada, cuando en realidad sí lo es.
 
     ### ¿Qué significa el Accuracy?
     La **Precisión Global** es el porcentaje total de aciertos (tanto positivos como negativos) sobre el total de casos. 
