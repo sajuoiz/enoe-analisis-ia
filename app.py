@@ -238,7 +238,7 @@ st.plotly_chart(fig_cm, use_container_width=True)
 
 # --- SECCIÓN: FALSOS POSITIVOS ---
 st.divider()
-st.header("🔍 Análisis de Potencial")
+st.header("🔍 Análisis de Falsos Positivos")
 df_res = X_test.copy()
 df_res['real'], df_res['pred'] = y_test, y_pred
 indices_fp = df_res[(df_res['real'] == 0) & (df_res['pred'] == 1)].index
