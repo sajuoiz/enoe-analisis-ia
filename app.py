@@ -237,26 +237,31 @@ fig_cm = ff.create_annotated_heatmap(cm[::-1], x=['Pred: No', 'Pred: Sí'], y=['
 st.plotly_chart(fig_cm, use_container_width=True)
 
 # --- SECCIÓN: FALSOS POSITIVOS ---
-# --- SECCIÓN: FALSOS POSITIVOS ---
+# --- SECCIÓN: FALSOS POSITIVOS (CORREGIDA) ---
 st.divider()
 st.header("🔍 Análisis de Falsos Positivos: El Techo de Cristal")
-st.markdown("""
-Los **Falsos Positivos** son personas que el modelo clasificó como 'Élite', pero que en la realidad no perciben esos ingresos. 
-Este grupo es clave para entender dónde el talento no se traduce en recompensa económica.
-""")
 
 df_res = X_test.copy()
 df_res['real'], df_res['pred'] = y_test, y_pred
 
-# Identificar índices de Falsos Positivos (Predicho: 1, Real: 0)
+# Identificar índices de Falsos Positivos
 indices_fp = df_res[(df_res['real'] == 0) & (df_res['pred'] == 1)].index
-fp_completos = df_pnea.loc[indices_fp]
 
-# Separar por género
+# IMPORTANTE: Usamos df_pnea o el dataframe original que tenga todas las columnas
+fp_completos = df_pnea.loc[indices_fp].copy()
+
+# Verificación de columnas existentes para evitar KeyError
+cols_disponibles = fp_completos.columns.tolist()
+col_esc = 'anios_esc' if 'anios_esc' in cols_disponibles else None
+col_hij = 'n_hij' if 'n_hij' in cols_disponibles else None
+# Si 'hrs_trab' falla, intenta con 'hrsocup' que es el nombre común en ENOE
+col_hrs = 'hrs_trab' if 'hrs_trab' in cols_disponibles else ('hrsocup' if 'hrsocup' in cols_disponibles else None)
+
+# Separar por género (asumiendo que es_mujer existe)
 fp_h = fp_completos[fp_completos['es_mujer'] == 0]
 fp_m = fp_completos[fp_completos['es_mujer'] == 1]
 
-col_graf, col_tablas = st.columns([1, 1.2]) # Ajustamos el ancho para que quepan las tablas
+col_graf, col_tablas = st.columns([1, 1.2])
 
 with col_graf:
     st.subheader("Distribución por Género")
@@ -266,41 +271,38 @@ with col_graf:
         hole=.4,
         marker_colors=['#3498db', '#e74c3c']
     )])
-    fig_fp.update_layout(showlegend=True, height=400)
     st.plotly_chart(fig_fp, use_container_width=True)
 
 with col_tablas:
     st.subheader("Características Promedio")
     
-    # Tabla para Hombres
+    # Función auxiliar para calcular promedios seguros
+    def get_mean(df, col):
+        return f"{df[col].mean():.1f}" if col and not df.empty else "N/A"
+
+    # Tabla Hombres
     st.write("**👨 Hombres (Falsos Positivos)**")
     st.table(pd.DataFrame({
         "Métrica": ["Cantidad", "Escolaridad", "Hijos", "Horas Trab."],
         "Valor": [
             len(fp_h), 
-            f"{fp_h['anios_esc'].mean():.1f} años", 
-            f"{fp_h['n_hij'].mean():.1f}",
-            f"{fp_h['hrs_trab'].mean():.1f} hrs"
+            get_mean(fp_h, col_esc), 
+            get_mean(fp_h, col_hij),
+            get_mean(fp_h, col_hrs)
         ]
     }))
 
-    # Tabla para Mujeres
+    # Tabla Mujeres
     st.write("**👩 Mujeres (Falsos Positivos)**")
     st.table(pd.DataFrame({
         "Métrica": ["Cantidad", "Escolaridad", "Hijos", "Horas Trab."],
         "Valor": [
             len(fp_m), 
-            f"{fp_m['anios_esc'].mean():.1f} años", 
-            f"{fp_m['n_hij'].mean():.1f}",
-            f"{fp_m['hrs_trab'].mean():.1f} hrs"
+            get_mean(fp_m, col_esc), 
+            get_mean(fp_m, col_hij),
+            get_mean(fp_m, col_hrs)
         ]
     }))
-
-st.info("""
-**Interpretación:** Si las mujeres muestran una escolaridad mayor que los hombres en esta tabla, 
-significa que el mercado laboral les exige más preparación para siquiera ser consideradas 'potencial élite' por el modelo, 
-aunque al final no logren concretar el ingreso.
-""")
 
 # --- GRÁFICA 6: BRECHA SALARIAL ---
 #-------------------DISTRIBUCION SALARIAL POR SEXO (TECHO DE CRISTAL)---------------------
