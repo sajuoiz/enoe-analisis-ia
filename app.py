@@ -142,7 +142,7 @@ with st.expander("🔍 ¿Qué son los Efectos Marginales y en qué se diferencia
                 
     #### Efectos Marginales Promedio (AME)
     Es una medida de **probabilidad absoluta** (puntos porcentuales). Nos dice cuánto cambia la probabilidad real (de 0 a 100%) cuando una variable aumenta en una unidad.
-    * **Ejemplo:** Si el Efecto Marginal de 'Educación' es **0.05**, significa que, en promedio, un año más de estudio aumenta la probabilidad de ser Empleado en **5 puntos porcentuales**.
+    * **Ejemplo:** Si el Efecto Marginal de 'Educación' es **0.006**, significa que, en promedio, un año más de estudio aumenta la probabilidad de ser Empleado en **0.6 puntos porcentuales**.
     * **Ventaja:** Es mucho más intuitivo. Nos permite decir: *"Si una persona estudia la universidad, su probabilidad de ganar más sube un X%"*.
    
     """)
