@@ -202,6 +202,34 @@ with st.expander("🔍 Interpretación de la Matriz de Confusión"):
     
     > **Dato para el análisis:** En problemas de "élite económica", donde los casos de éxito son pocos, una matriz de confusión equilibrada es más importante que un accuracy alto, ya que nos asegura que el modelo no está simplemente "adivinando" que nadie tendrá éxito.
     """)
+
+st.subheader("📊 Métricas de Rendimiento del Modelo")
+
+# 1. Calculamos el reporte de clasificación como diccionario
+# Asegúrate de haber definido y_test y y_pred anteriormente
+reporte = classification_report(y_test, y_pred, output_dict=True)
+
+# 2. Mostramos las métricas en columnas para un look profesional
+c1, c2, c3, c4 = st.columns(4)
+
+c1.metric("Accuracy", f"{accuracy_score(y_test, y_pred):.1%}")
+# Usamos '1' porque es la etiqueta de nuestra clase objetivo (élite)
+c2.metric("Precision", f"{reporte['1']['precision']:.1%}")
+c3.metric("Recall", f"{reporte['1']['recall']:.1%}")
+c4.metric("F1-Score", f"{reporte['1']['f1-score']:.1%}")
+
+# 3. Explicación técnica para el usuario
+with st.expander("🔍 ¿Qué significan estos números?"):
+    st.markdown(f"""
+    Para evaluar la confiabilidad de la predicción, analizamos cuatro dimensiones:
+
+    * **Accuracy (Exactitud):** Es el porcentaje total de aciertos. Aunque es alto, en poblaciones desbalanceadas (pocos ricos vs. muchos pobres) puede ser engañoso.
+    * **Precision (Calidad):** Responde a: *De todos los que el modelo predijo como Élite, ¿cuántos realmente lo son?* (Evita falsas alarmas).
+    * **Recall (Alcance):** Responde a: *De todos los que son Élite en la vida real, ¿a cuántos logró detectar el modelo?* (Evita ignorar casos de éxito).
+    * **F1-Score (Equilibrio):** Es la métrica más robusta. Combina Precision y Recall en un solo número. Si este número es alto, el modelo es confiable para predecir la clase de éxito.
+
+    > **Interpretación:** Un F1-Score por encima del **0.70** se considera un modelo sólido para análisis sociales con microdatos de la ENOE.
+    """)
 reporte = classification_report(y_test, y_pred, output_dict=True)
 cm = confusion_matrix(y_test, y_pred)
 fig_cm = ff.create_annotated_heatmap(cm[::-1], x=['Pred: No', 'Pred: Sí'], y=['Real: Sí', 'Real: No'], colorscale='Blues')
