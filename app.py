@@ -226,7 +226,7 @@ with st.expander("🔍 ¿Qué significan estos números?"):
 
     * **Accuracy (Exactitud):** Es el porcentaje total de aciertos. Aunque es alto, en poblaciones desbalanceadas puede ser engañoso.
     * **Precision (Calidad):** Responde a: *De todos los que el modelo predijo como Empleados, ¿cuántos realmente lo son?* (Evita falsas alarmas).
-    * **Recall (Alcance):** Responde a: *De todos los que son EMpleados en la vida real, ¿a cuántos logró detectar el modelo?* (Evita ignorar casos de empeabilidad).
+    * **Recall (Alcance):** Responde a: *De todos los que son Empleados en la vida real, ¿a cuántos logró detectar el modelo?* (Evita ignorar casos de empeabilidad).
     * **F1-Score (Equilibrio):** Es la métrica más robusta. Combina Precision y Recall en un solo número. Si este número es alto, el modelo es confiable para predecir la clase "Empleados".
 
     > **Interpretación:** Un F1-Score por encima del **0.70** se considera un modelo sólido para análisis sociales con microdatos de la ENOE.
