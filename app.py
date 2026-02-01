@@ -78,7 +78,7 @@ st.plotly_chart(fig_din, use_container_width=True)
 
 # --- GRÁFICA 2: COEFICIENTES ---
 st.divider()
-st.header("🧠 Inteligencia Artificial: Regresión Logística")
+st.header("🧠 Modelo de ML: Regresión Logística")
 
 with st.expander("🔍 ¿Qué es este modelo y cómo funciona?"):
     st.markdown("""
