@@ -180,28 +180,7 @@ st.plotly_chart(fig_ame, use_container_width=True)
 
 # --- GRÁFICA 5: MATRIZ DE CONFUSIÓN ---
 st.divider()
-st.header("📈 Validación del Modelo: ¿Qué tan confiable es?")
-
-# El Accuracy que ya calculaste lo puedes mostrar así:
-st.metric("Precisión Global (Accuracy)", f"{accuracy_score(y_test, y_pred):.2%}")
-
-with st.expander("🔍 Interpretación de la Matriz de Confusión"):
-    st.markdown("""
-    ### ¿Qué es la Matriz de Confusión?
-    Es la herramienta definitiva para evaluar un modelo de clasificación. No solo nos dice si el modelo acertó, sino que nos revela **en qué dirección se equivoca**.
-
-    ### Los 4 Cuadrantes de la Verdad:
-    
-    1. **Verdaderos Positivos (Top-Right):** Personas que el modelo predijo correctamente como parte de la "élite".
-    2. **Verdaderos Negativos (Bottom-Left):** Personas que el modelo identificó correctamente como "no élite".
-    3. **Falsos Positivos (Error Tipo I):** El modelo predijo que alguien tendría éxito económico, pero en la realidad no es así.
-    4. **Falsos Negativos (Error Tipo II):** El modelo dijo que alguien no sería élite, cuando en realidad sí lo es.
-
-    ### ¿Qué significa el Accuracy?
-    La **Precisión Global** es el porcentaje total de aciertos (tanto positivos como negativos) sobre el total de casos. 
-    
-    > **Dato para el análisis:** En problemas de "élite económica", donde los casos de éxito son pocos, una matriz de confusión equilibrada es más importante que un accuracy alto, ya que nos asegura que el modelo no está simplemente "adivinando" que nadie tendrá éxito.
-    """)
+st.header("🎯 Validación del Modelo")
 reporte = classification_report(y_test, y_pred, output_dict=True)
 cm = confusion_matrix(y_test, y_pred)
 fig_cm = ff.create_annotated_heatmap(cm[::-1], x=['Pred: No', 'Pred: Sí'], y=['Real: Sí', 'Real: No'], colorscale='Blues')
