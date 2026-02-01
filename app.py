@@ -60,7 +60,7 @@ modelo_pnea, features, X, y, X_test, y_test, y_pred, df_pnea = procesar_modelo_c
 
 # --- INICIO DE INTERFAZ ---
 st.title("📊 Análisis de la Viabilidad Económica Por Género")
-st.markdown("Estudio basado en microdatos de la ENOE (Q1-2024)")
+st.markdown("Estudio basado en microdatos de la ENOE (T1-2024)")
 
 # --- GRÁFICA 1: DINÁMICA LABORAL ---
 st.header("Dinámica Laboral por Edad y Género (Población Empleada)")
