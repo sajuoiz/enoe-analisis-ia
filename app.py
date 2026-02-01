@@ -239,7 +239,7 @@ st.plotly_chart(fig_cm, use_container_width=True)
 # --- SECCIÓN: FALSOS POSITIVOS ---
 # --- SECCIÓN: FALSOS POSITIVOS (CON EDAD Y SIN HORAS) ---
 st.divider()
-st.header("🔍 Análisis de Falsos Positivos: El Techo de Cristal")
+st.header("🔍 Análisis de Falsos Positivos")
 
 df_res = X_test.copy()
 df_res['real'], df_res['pred'] = y_test, y_pred
@@ -293,7 +293,8 @@ with col_tablas:
     }))
 
 st.info("""
-**Dato para tu video:** Si la edad promedio de las mujeres es mayor que la de los hombres en este grupo, estarías demostrando que incluso con **más años de experiencia y madurez**, las mujeres siguen siendo clasificadas como 'potencialmente exitosas' sin que se refleje en su cuenta bancaria.
+**Dato para tu video:** Es probable que para las mujeres en esta situación se vean orilladas a buscar pareja para poder tener un sustento económico. 
+        En el caso de los hombres, es mas probable que encuentren empleo mal pagado a pesar de sus circunstancias personales.
 """)
 
 # --- GRÁFICA 6: BRECHA SALARIAL ---
