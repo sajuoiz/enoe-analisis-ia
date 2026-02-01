@@ -255,7 +255,7 @@ cols_disponibles = fp_completos.columns.tolist()
 col_esc = 'anios_esc' if 'anios_esc' in cols_disponibles else None
 col_hij = 'n_hij' if 'n_hij' in cols_disponibles else None
 # Si 'hrs_trab' falla, intenta con 'hrsocup' que es el nombre común en ENOE
-col_hrs = 'hrs_trab' if 'hrs_trab' in cols_disponibles else ('hrsocup' if 'hrsocup' in cols_disponibles else None)
+#col_hrs = 'hrs_trab' if 'hrs_trab' in cols_disponibles else ('hrsocup' if 'hrsocup' in cols_disponibles else None)
 
 # Separar por género (asumiendo que es_mujer existe)
 fp_h = fp_completos[fp_completos['es_mujer'] == 0]
@@ -283,7 +283,7 @@ with col_tablas:
     # Tabla Hombres
     st.write("**👨 Hombres (Falsos Positivos)**")
     st.table(pd.DataFrame({
-        "Métrica": ["Cantidad", "Escolaridad", "Hijos", "Horas Trab."],
+        "Métrica": ["Cantidad", "Escolaridad", "Hijos"],
         "Valor": [
             len(fp_h), 
             get_mean(fp_h, col_esc), 
