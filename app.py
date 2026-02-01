@@ -377,7 +377,7 @@ st.plotly_chart(fig_gen, use_container_width=True)
 
 #------------------- 📦 DIAGRAMA DE CAJAS: DISPERSIÓN SALARIAL SEPARADA ---------------------
 st.divider()
-st.header("📦 Dispersión Salarial: Metodología Oficial INEGI")
+st.header("📦 Dispersión Salarial: Grupos Oficiales del INEGI")
 st.markdown("""
 Distribución interna de los ingresos basada en las categorías estandarizadas de la variable **ing7c**.
 Esta visualización permite comparar la estructura salarial base frente a la élite.
