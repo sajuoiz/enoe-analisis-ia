@@ -250,6 +250,77 @@ fig_gen.update_layout(
 
 st.plotly_chart(fig_gen, use_container_width=True)
 
+#------------------- 📦 DIAGRAMA DE CAJAS: DISPERSIÓN SALARIAL SEPARADA ---------------------
+st.divider()
+st.header("📦 Dispersión Salarial: Metodología Oficial INEGI")
+st.markdown("""
+Distribución interna de los ingresos basada en las categorías estandarizadas de la variable **ing7c**.
+Esta visualización permite comparar la estructura salarial base frente a la élite.
+""")
+
+# 1. Asegurar variable y cálculo de SM dinámico
+poblacion_ocupada = df[df['clase2'] == 1].copy()
+salario_minimo_base = poblacion_ocupada[poblacion_ocupada['ing7c'] == 1]['ingocup'].max()
+if not salario_minimo_base or salario_minimo_base == 0:
+    salario_minimo_base = 7468
+
+# 2. Creación de columnas
+col_caja1, col_caja2 = st.columns([3, 2])
+
+with col_caja1:
+    st.subheader("Estructura Salarial (Rangos 1-4)")
+    # Filtramos grupos 1, 2, 3 y 4 (Metodología completa)
+    df_base = poblacion_ocupada[
+        (poblacion_ocupada['ing7c'].isin([1, 2, 3, 4])) & 
+        (poblacion_ocupada['ingocup'] > 0)
+    ].copy()
+    
+    mapeo_inegi = {
+        1: f'Hasta 1 SM\n(<${salario_minimo_base:,.0f})',
+        2: f'1-2 SM\n(${salario_minimo_base:,.0f}-${salario_minimo_base*2:,.0f})',
+        3: f'2-3 SM\n(${salario_minimo_base*2:,.0f}-${salario_minimo_base*3:,.0f})',
+        4: f'3-5 SM\n(${salario_minimo_base*3:,.0f}-${salario_minimo_base*5:,.0f})'
+    }
+    
+    df_base['Rango'] = df_base['ing7c'].map(mapeo_inegi)
+    df_base['Sexo'] = df_base['sex'].map({1: 'Hombres', 2: 'Mujeres'})
+
+    fig_base = go.Figure()
+    for gen, col in zip(['Hombres', 'Mujeres'], ['#3498db', '#e74c3c']):
+        sub = df_base[df_base['Sexo'] == gen]
+        fig_base.add_trace(go.Box(y=sub['ingocup'], x=sub['Rango'], name=gen, marker_color=col))
+    
+    fig_base.update_layout(title="Distribución: Salarios Base y Medios", yaxis_title="MXN", boxmode='group', template='plotly_white')
+    st.plotly_chart(fig_base, use_container_width=True)
+
+with col_caja2:
+    st.subheader("La Élite (Rango 5)")
+    # Solo rango 5
+    df_elite = poblacion_ocupada[
+        (poblacion_ocupada['ing7c'] == 5) & 
+        (poblacion_ocupada['ingocup'] > 0) & 
+        (poblacion_ocupada['ingocup'] < 250000)
+    ].copy()
+    
+    etiqueta_elite = f'5+ SM\n(> ${salario_minimo_base*5:,.0f})'
+    df_elite['Sexo'] = df_elite['sex'].map({1: 'Hombres', 2: 'Mujeres'})
+
+    fig_elite = go.Figure()
+    for gen, col in zip(['Hombres', 'Mujeres'], ['#3498db', '#e74c3c']):
+        sub = df_elite[df_elite['Sexo'] == gen]
+        fig_elite.add_trace(go.Box(y=sub['ingocup'], x=[etiqueta_elite] * len(sub), name=gen, marker_color=col))
+    
+    fig_elite.update_layout(title="Distribución: Salarios Altos", yaxis_title="MXN", boxmode='group', template='plotly_white')
+    st.plotly_chart(fig_elite, use_container_width=True)
+
+# 3. Nota técnica
+st.info(f"""
+📌 **Nota Metodológica:** Los rangos siguen la clasificación de la variable `ing7c` del INEGI. 
+El **Salario Mínimo de Referencia** detectado es de **${salario_minimo_base:,.2f}**. 
+Observa cómo en el rango 4 (3-5 SM) la brecha de género comienza a ensancharse, culminando en la 
+extrema volatilidad del rango 5.
+""")
+
 #-------------FORMALES VS INFORMALES---------------------
 #----------------🛡️ ESTABILIDAD VS RIESGO: FORMALIDAD EN LA ÉLITE ----------------
 #----------------🛡️ ESTABILIDAD VS RIESGO: FORMALIDAD EN LA ÉLITE ----------------
