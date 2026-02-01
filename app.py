@@ -268,36 +268,27 @@ with col_graf:
 with col_tablas:
     st.subheader("Características Promedio")
     
-    # --- Lógica usando la columna 'edo_civil' identificada anteriormente ---
-    def pct_casados(df_filtrado):
-        if not df_filtrado.empty and 'edo_civil' in df_filtrado.columns:
-            # Al ser binaria (0 y 1), el promedio es el porcentaje
-            return f"{(df_filtrado['edo_civil'].mean() * 100):.1f}%"
-        return "N/D"
-
     # Tabla para Hombres
     st.write("**👨 Hombres (Falsos Positivos)**")
     st.table(pd.DataFrame({
-        "Métrica": ["Cantidad", "Edad Promedio", "Escolaridad", "Hijos Prom.", "Con Pareja %"],
+        "Métrica": ["Cantidad", "Edad Promedio", "Escolaridad Prom.", "Hijos Prom."],
         "Valor": [
             f"{len(fp_h)}", 
             f"{fp_h['eda'].mean():.1f} años" if not fp_h.empty else "0.0",
             f"{fp_h['anios_esc'].mean():.1f} años" if not fp_h.empty else "0.0", 
-            f"{fp_h['n_hij'].mean():.1f}" if not fp_h.empty else "0.0",
-            pct_casados(fp_h)
+            f"{fp_h['n_hij'].mean():.1f}" if not fp_h.empty else "0.0"
         ]
     }))
 
     # Tabla para Mujeres
     st.write("**👩 Mujeres (Falsos Positivos)**")
     st.table(pd.DataFrame({
-        "Métrica": ["Cantidad", "Edad Promedio", "Escolaridad", "Hijos Prom.", "Con Pareja %"],
+        "Métrica": ["Cantidad", "Edad Promedio", "Escolaridad Prom.", "Hijos Prom."],
         "Valor": [
             f"{len(fp_m)}", 
             f"{fp_m['eda'].mean():.1f} años" if not fp_m.empty else "0.0",
             f"{fp_m['anios_esc'].mean():.1f} años" if not fp_m.empty else "0.0", 
-            f"{fp_m['n_hij'].mean():.1f}" if not fp_m.empty else "0.0",
-            pct_casados(fp_m)
+            f"{fp_m['n_hij'].mean():.1f}" if not fp_m.empty else "0.0"
         ]
     }))
 
