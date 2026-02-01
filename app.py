@@ -8,6 +8,7 @@ import statsmodels.api as sm
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.metrics import classification_report, accuracy_score
 
 # Configuración inicial
 st.set_page_config(page_title="Análisis ENOE", layout="wide")
