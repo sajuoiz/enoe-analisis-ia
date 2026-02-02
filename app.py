@@ -251,7 +251,7 @@ st.plotly_chart(fig_cm, use_container_width=True)
 # --- SECCIÓN: FALSOS POSITIVOS ---
 # --- SECCIÓN: FALSOS POSITIVOS (CON EDAD Y SIN HORAS) ---
 st.divider()
-st.header("🔍 Análisis de Falsos Positivos (Personas que el modelo predice deberían estar empleadas, pero no lo están en la realidad)")
+st.header("🔍 Análisis de Falsos Positivos (Personas que el modelo predice deberían estar empleadas (tienen buenas características), pero no lo están en la realidad)")
 
 df_res = X_test.copy()
 df_res['real'], df_res['pred'] = y_test, y_pred
@@ -305,8 +305,8 @@ with col_tablas:
     }))
 
 st.info("""
-**Dato para tu video:** Es probable que para las mujeres en esta situación se vean orilladas a buscar pareja para poder tener un sustento económico. 
-        En el caso de los hombres, es mas probable que encuentren empleo mal a pesar de sus circunstancias personales.
+**Dato:** Ambos tienen caracteristicas muy parecidas, ya no serían rentables para el mercado laboral dado su nivel de escolaridad y edad
+        ¿Qué se debería hacer con ellos, abandonarles?.
 """)
 
 # --- GRÁFICA 6: BRECHA SALARIAL ---
