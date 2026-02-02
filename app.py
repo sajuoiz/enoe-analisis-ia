@@ -251,7 +251,7 @@ st.plotly_chart(fig_cm, use_container_width=True)
 # --- SECCIÓN: FALSOS POSITIVOS ---
 # --- SECCIÓN: FALSOS POSITIVOS (CON EDAD Y SIN HORAS) ---
 st.divider()
-st.header("🔍 Análisis de Falsos Positivos")
+st.header("🔍 Análisis de Falsos Positivos (Personas que el modelo predice deberían estar empleadas, pero no lo están en la realidad)")
 
 df_res = X_test.copy()
 df_res['real'], df_res['pred'] = y_test, y_pred
