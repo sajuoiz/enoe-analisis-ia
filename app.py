@@ -318,7 +318,10 @@ with col_tablas:
     }))
 
 st.info("""
-**Dato:** Ambos tienen caracteristicas muy parecidas, ya no serían rentables para el mercado laboral dado su nivel de escolaridad y edad
+**Dato:** Ambos tienen caracteristicas muy parecidas, ya no serían rentables para el mercado laboral dado su nivel de escolaridad y edad.
+        Tambièn observamos que es más probale que las mujeres tengan pareja, como una posibilidad para buscar apoyo ente la imposibilidad de acerder
+        al mercado laboral. Lo cual para los hombres no es una opcion, el porcentaje de ellos con pareja es muchísimo menor.
+        (no hay que pasar por alto la gran posibilidad de que las mujeres quedan en una situación de vulnerabilidad.)
         ¿Qué se debería hacer con ellos, abandonarles?.
 """)
 
