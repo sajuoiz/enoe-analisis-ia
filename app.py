@@ -62,18 +62,57 @@ modelo_pnea, features, X, y, X_test, y_test, y_pred, df_pnea = procesar_modelo_c
 st.title("📊 Análisis de la Viabilidad Económica Por Género")
 st.markdown("Estudio basado en microdatos de la ENOE (T1-2024-SDEMT)")
 
-# --- GRÁFICA 1: DINÁMICA LABORAL ---
+# --- GRÁFICA 1: DINÁMICA LABORAL (ACTUALIZADA CON TOTALES) ---
 st.header("Dinámica Laboral por Edad y Género (Población Empleada)")
+
+# 1. Filtro y copia
 df_ocupados = df[(df['eda'] >= 15) & (df['eda'] < 99) & (df['clase2'] == 1)].copy()
+
+# 2. Agrupación y suma ponderada
 resumen = df_ocupados.groupby(['eda', 'sex'])['fac_tri'].sum().unstack()
 
-fig_din = go.Figure()
-if 1 in resumen.columns:
-    fig_din.add_trace(go.Scatter(x=resumen.index, y=resumen[1], name='Hombres', line=dict(color='#1f77b4', width=3)))
-if 2 in resumen.columns:
-    fig_din.add_trace(go.Scatter(x=resumen.index, y=resumen[2], name='Mujeres', line=dict(color='#d62728', width=3)))
+# 3. Cálculo de Totales Nacionales (Sumando los factores de expansión)
+total_h_emp = resumen[1].sum() if 1 in resumen.columns else 0
+total_m_emp = resumen[2].sum() if 2 in resumen.columns else 0
+suma_total_emp = total_h_emp + total_m_emp
 
-fig_din.update_layout(xaxis_title="Edad", yaxis_title="Personas", template="plotly_white", hovermode="x unified")
+# 4. Viñetas informativas superiores (Opcional, ayuda mucho a la lectura)
+c1, c2, c3 = st.columns(3)
+c1.metric("Total Empleados", f"{int(suma_total_emp):,}")
+c2.metric("Hombres 👨", f"{int(total_h_emp):,}")
+c3.metric("Mujeres 👩", f"{int(total_m_emp):,}")
+
+fig_din = go.Figure()
+
+# 5. Agregar trazos con totales en el nombre (Leyenda)
+if 1 in resumen.columns:
+    fig_din.add_trace(go.Scatter(
+        x=resumen.index, 
+        y=resumen[1], 
+        name=f'Hombres (Total: {int(total_h_emp):,})', 
+        line=dict(color='#1f77b4', width=3),
+        fill='tozeroy', # Relleno opcional para ver volumen
+        opacity=0.1
+    ))
+
+if 2 in resumen.columns:
+    fig_din.add_trace(go.Scatter(
+        x=resumen.index, 
+        y=resumen[2], 
+        name=f'Mujeres (Total: {int(total_m_emp):,})', 
+        line=dict(color='#d62728', width=3),
+        fill='tozeroy',
+        opacity=0.1
+    ))
+
+fig_din.update_layout(
+    xaxis_title="Edad (Años)", 
+    yaxis_title="Cantidad de Personas (Expandido)", 
+    template="plotly_white", 
+    hovermode="x unified",
+    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+)
+
 st.plotly_chart(fig_din, use_container_width=True)
 
 # --- GRÁFICA 2: COEFICIENTES ---
