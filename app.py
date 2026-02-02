@@ -280,27 +280,40 @@ with col_graf:
 with col_tablas:
     st.subheader("Características Promedio")
     
+    # --- Lógica para calcular cantidad y porcentaje con pareja ---
+    def info_pareja(df_filtrado):
+        if not df_filtrado.empty:
+            # Si el nombre es 'tiene_pareja' o 'edo_civil', lo buscamos
+            col = 'tiene_pareja' if 'tiene_pareja' in df_filtrado.columns else 'edo_civil'
+            if col in df_filtrado.columns:
+                cantidad = int(df_filtrado[col].sum())
+                porcentaje = (df_filtrado[col].mean() * 100)
+                return f"{cantidad} ({porcentaje:.1f}%)"
+        return "0 (0.0%)"
+
     # Tabla para Hombres
     st.write("**👨 Hombres (Falsos Positivos)**")
     st.table(pd.DataFrame({
-        "Métrica": ["Cantidad", "Edad Promedio", "Escolaridad Prom.", "Hijos Prom."],
+        "Métrica": ["Cantidad Total", "Edad Promedio", "Escolaridad", "Hijos Prom.", "Con Pareja (Cant. y %)"],
         "Valor": [
             f"{len(fp_h)}", 
             f"{fp_h['eda'].mean():.1f} años" if not fp_h.empty else "0.0",
             f"{fp_h['anios_esc'].mean():.1f} años" if not fp_h.empty else "0.0", 
-            f"{fp_h['n_hij'].mean():.1f}" if not fp_h.empty else "0.0"
+            f"{fp_h['n_hij'].mean():.1f}" if not fp_h.empty else "0.0",
+            info_pareja(fp_h)
         ]
     }))
 
     # Tabla para Mujeres
     st.write("**👩 Mujeres (Falsos Positivos)**")
     st.table(pd.DataFrame({
-        "Métrica": ["Cantidad", "Edad Promedio", "Escolaridad Prom.", "Hijos Prom."],
+        "Métrica": ["Cantidad Total", "Edad Promedio", "Escolaridad", "Hijos Prom.", "Con Pareja (Cant. y %)"],
         "Valor": [
             f"{len(fp_m)}", 
             f"{fp_m['eda'].mean():.1f} años" if not fp_m.empty else "0.0",
             f"{fp_m['anios_esc'].mean():.1f} años" if not fp_m.empty else "0.0", 
-            f"{fp_m['n_hij'].mean():.1f}" if not fp_m.empty else "0.0"
+            f"{fp_m['n_hij'].mean():.1f}" if not fp_m.empty else "0.0",
+            info_pareja(fp_m)
         ]
     }))
 
