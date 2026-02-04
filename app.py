@@ -115,6 +115,11 @@ fig_din.update_layout(
 
 st.plotly_chart(fig_din, use_container_width=True)
 
+st.info("""
+**Dato:** Las mujeres siempre se encuentran subcontratadas sin importar su edad en comparaciòn con los hombres.
+        Lo cual rompe la idea de que las mujeres solo enfrentan dificultades laborales en edades de maternidad.
+""")
+
 # --- GRÁFICA 2: COEFICIENTES ---
 st.divider()
 st.header("🧠 Modelo de ML: Regresión Logística")
