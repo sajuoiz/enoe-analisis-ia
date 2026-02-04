@@ -489,6 +489,38 @@ fig_gen.update_layout(
 
 st.plotly_chart(fig_gen, use_container_width=True)
 
+
+# --- CÁLCULO DE DENSIDAD POR RANGOS --------------------------------------
+def generar_grafico_densidad(_df):
+    # 1. Crear los rangos (bins)
+    bins = [15, 25, 35, 45, 55, 65, 75, 85, 95]
+    labels = ['15-25', '25-35', '35-45', '45-55', '55-65', '65-75', '75-85', '85-95']
+    
+    df_bins = _df[(_df['eda'] >= 15) & (_df['eda'] < 95)].copy()
+    df_bins['rango_edad'] = pd.cut(df_bins['eda'], bins=bins, labels=labels, right=False)
+    
+    # 2. Sumar población expandida por rango y sexo
+    densidad = df_bins.groupby(['rango_edad', 'sex'])['fac_tri'].sum().reset_index()
+    densidad['sex'] = densidad['sex'].map({1: 'Hombres', 2: 'Mujeres'})
+    
+    # --- OPCIÓN A: HEATMAP (ESTILO DENSIDAD) ---
+    fig = px.density_heatmap(
+        densidad, 
+        x="rango_edad", 
+        y="sex", 
+        z="fac_tri",
+        color_continuous_scale="Viridis",
+        labels={'fac_tri': 'Población', 'rango_edad': 'Rango de Edad', 'sex': 'Género'},
+        title="Concentración de Población en México"
+    )
+    
+    return fig
+
+# En Streamlit:
+st.header("🍯 Densidad Poblacional por Rangos")
+fig_densidad = generar_grafico_densidad(df)
+st.plotly_chart(fig_densidad, use_container_width=True)
+
 #------------------- 📦 DIAGRAMA DE CAJAS: DISPERSIÓN SALARIAL SEPARADA ---------------------
 st.divider()
 st.header("📦 Dispersión Salarial: Grupos Oficiales del INEGI")
