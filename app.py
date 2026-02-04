@@ -170,6 +170,13 @@ fig_sim.add_trace(go.Scatter(x=np.arange(0,7), y=calc_p(1), name="Mujeres", line
 fig_sim.update_layout(title="Probabilidad vs Número de Hijos", yaxis_range=[0,1.1], template="plotly_white", yaxis_title="Probabilidad de Empleo", xaxis_title="Número de Hijos")
 st.plotly_chart(fig_sim, use_container_width=True)
 
+st.info("""
+**Dato:** Hay que tomar en cuenta que aquí el INEGI por metodología de la encuesta en cuanto a natalidad solamente pone o anota el número de hijos
+        para la mujer (madre), la encuesta como tal no tiene información sobre el número de hijos de los hombres, de ahí que la gráfica de hombres
+        permanezca horizontal. Aún así la grafica de hombres como punto de referencia permite ver como cae la probabilidad de empleo en mujeres 
+        conforme aumenta el número de hijos.
+""")
+
 # --- GRÁFICA 4: EFECTOS MARGINALES ---
 st.divider()
 st.header("🎯 Efectos Marginales (Impacto en %)")
