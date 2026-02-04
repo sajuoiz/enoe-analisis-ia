@@ -521,6 +521,51 @@ st.header("🍯 Densidad Poblacional por Rangos")
 fig_densidad = generar_grafico_densidad(df)
 st.plotly_chart(fig_densidad, use_container_width=True)
 
+# --- SECCIÓN: EL PARADOJA DE LA PREPARACIÓN (15-25 años) ---
+st.divider()
+st.subheader("🎓 Nivel Universitario en el Segmento Joven (15-25 años)")
+
+@st.cache_data
+def analizar_universitarios_jovenes(_df):
+    # 1. Filtrar el segmento joven (el bloque amarillo de tu gráfica)
+    df_joven = _df[(_df['eda'] >= 15) & (_df['eda'] <= 25)].copy()
+    
+    # 2. Definir quién tiene nivel universitario (16+ años de estudio)
+    # También calculamos el total del segmento para sacar el %
+    df_joven['es_universitario'] = (df_joven['anios_esc'] >= 16).astype(int)
+    
+    def calcular_stats(sub_df):
+        if sub_df.empty: return 0, 0
+        total_pob = sub_df['fac_tri'].sum()
+        total_univ = (sub_df['es_universitario'] * sub_df['fac_tri']).sum()
+        porcentaje = (total_univ / total_pob) * 100
+        return total_univ, porcentaje
+
+    # Totales por sexo
+    h_univ, h_pct = calcular_stats(df_joven[df_joven['sex'] == 1])
+    m_univ, m_pct = calcular_stats(df_joven[df_joven['sex'] == 2])
+    
+    return h_univ, h_pct, m_univ, m_pct
+
+h_u, h_p, m_u, m_p = analizar_universitarios_jovenes(df)
+
+# Visualización en Streamlit
+col1, col2 = st.columns(2)
+
+with col1:
+    st.metric("Mujeres Jóvenes con Universidad", f"{m_p:.1f}%")
+    st.caption(f"Aprox. {int(m_u):,}")
+
+with col2:
+    st.metric("Hombres Jóvenes con Universidad", f"{h_p:.1f}%")
+    st.caption(f"Aprox. {int(h_u):,}")
+
+st.warning(f"""
+⚠️ **Análisis Crítico:** Si el **{max(h_p, m_p):.1f}%** de los jóvenes ya tienen o están terminando 
+estudios universitarios y aun así la mayoría cae en el rango de **1 Salario Mínimo**, 
+la evidencia sugiere que el problema no es la falta de educación, sino la **infravaloración del talento joven**.
+""")
+
 #------------------- 📦 DIAGRAMA DE CAJAS: DISPERSIÓN SALARIAL SEPARADA ---------------------
 st.divider()
 st.header("📦 Dispersión Salarial: Grupos Oficiales del INEGI")
