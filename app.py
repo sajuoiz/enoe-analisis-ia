@@ -145,7 +145,7 @@ fig_coef = go.Figure(go.Bar(
     x=coef_df['Coeficiente'], y=coef_df['Variable'], orientation='h',
     marker_color=['#d62728' if x < 0 else '#2ca02c' for x in coef_df['Coeficiente']]
 ))
-fig_coef.update_layout(title="Impacto Relativo de las Variables", template="plotly_white", yaxis_title="Variables", xaxis_title="Peso de cada variable en el modelo")
+fig_coef.update_layout(title="Impacto Relativo de las Variables", template="plotly_white", yaxis_title="Variables", xaxis_title="Dirección y Peso de cada variable en el modelo")
 st.plotly_chart(fig_coef, use_container_width=True)
 
 # --- GRÁFICA 3: SIMULADOR ---
