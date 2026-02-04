@@ -167,7 +167,7 @@ def calc_p(es_m):
 fig_sim = go.Figure()
 fig_sim.add_trace(go.Scatter(x=np.arange(0,7), y=calc_p(0), name="Hombres", line=dict(color='#1f77b4')))
 fig_sim.add_trace(go.Scatter(x=np.arange(0,7), y=calc_p(1), name="Mujeres", line=dict(color='#d62728')))
-fig_sim.update_layout(title="Probabilidad vs Número de Hijos", yaxis_range=[0,1.1], template="plotly_white")
+fig_sim.update_layout(title="Probabilidad vs Número de Hijos", yaxis_range=[0,1.1], template="plotly_white", yaxis_title="Probabilidad de Empleo", xaxis_title="Número de Hijos")
 st.plotly_chart(fig_sim, use_container_width=True)
 
 # --- GRÁFICA 4: EFECTOS MARGINALES ---
