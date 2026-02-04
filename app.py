@@ -522,48 +522,47 @@ fig_densidad = generar_grafico_densidad(df)
 st.plotly_chart(fig_densidad, use_container_width=True)
 
 # --- SECCIÓN: EL PARADOJA DE LA PREPARACIÓN (15-25 años) ---
+# --- SECCIÓN: EL SEGMENTO PROFESIONAL JOVEN (23-28 años) ---
 st.divider()
-st.subheader("🎓 Nivel Universitario en el Segmento Joven (15-25 años)")
+st.subheader("🎓 Título Universitario: El Segmento de 23 a 28 años")
 
 @st.cache_data
-def analizar_universitarios_jovenes(_df):
-    # 1. Filtrar el segmento joven (el bloque amarillo de tu gráfica)
-    df_joven = _df[(_df['eda'] >= 15) & (_df['eda'] <= 25)].copy()
+def analizar_profesionales_jovenes(_df):
+    # 1. Filtramos el rango específico de 23 a 28 años
+    df_prof = _df[(_df['eda'] >= 23) & (_df['eda'] <= 28)].copy()
     
-    # 2. Definir quién tiene nivel universitario (16+ años de estudio)
-    # También calculamos el total del segmento para sacar el %
-    df_joven['es_universitario'] = (df_joven['anios_esc'] >= 16).astype(int)
+    # 2. Definimos nivel universitario (16+ años de escolaridad)
+    df_prof['es_universitario'] = (df_prof['anios_esc'] >= 16).astype(int)
     
-    def calcular_stats(sub_df):
+    def obtener_metricas(sub_df):
         if sub_df.empty: return 0, 0
-        total_pob = sub_df['fac_tri'].sum()
-        total_univ = (sub_df['es_universitario'] * sub_df['fac_tri']).sum()
-        porcentaje = (total_univ / total_pob) * 100
-        return total_univ, porcentaje
+        pob_total = sub_df['fac_tri'].sum()
+        pob_univ = (sub_df['es_universitario'] * sub_df['fac_tri']).sum()
+        porcentaje = (pob_univ / pob_total) * 100
+        return pob_univ, porcentaje
 
-    # Totales por sexo
-    h_univ, h_pct = calcular_stats(df_joven[df_joven['sex'] == 1])
-    m_univ, m_pct = calcular_stats(df_joven[df_joven['sex'] == 2])
+    # Cálculos por sexo
+    h_univ, h_pct = obtener_metricas(df_prof[df_prof['sex'] == 1])
+    m_univ, m_pct = obtener_metricas(df_prof[df_prof['sex'] == 2])
     
-    return h_univ, h_pct, m_univ, m_pct
+    return h_univ, h_pct, m_univ, m_pct, (h_univ + m_univ)
 
-h_u, h_p, m_u, m_p = analizar_universitarios_jovenes(df)
+h_u, h_p, m_u, m_p, total_u = analizar_profesionales_jovenes(df)
 
 # Visualización en Streamlit
-col1, col2 = st.columns(2)
+c1, c2 = st.columns(2)
 
-with col1:
-    st.metric("Mujeres Jóvenes con Universidad", f"{m_p:.1f}%")
-    st.caption(f"Aprox. {int(m_u):,}")
+with c1:
+    st.metric("Mujeres (23-28) con Universidad", f"{m_p:.1f}%")
+    st.write(f"Cifra expandida: **{int(m_u):,}** mujeres")
 
-with col2:
-    st.metric("Hombres Jóvenes con Universidad", f"{h_p:.1f}%")
-    st.caption(f"Aprox. {int(h_u):,}")
+with c2:
+    st.metric("Hombres (23-28) con Universidad", f"{h_p:.1f}%")
+    st.write(f"Cifra expandida: **{int(h_u):,}** hombres")
 
-st.warning(f"""
-⚠️ **Análisis Crítico:** Si el **{max(h_p, m_p):.1f}%** de los jóvenes ya tienen o están terminando 
-estudios universitarios y aun así la mayoría cae en el rango de **1 Salario Mínimo**, 
-la evidencia sugiere que el problema no es la falta de educación, sino la **infravaloración del talento joven**.
+st.markdown(f"""
+> **Conclusión del Segmento:** En este rango de edad, hay un total de **{int(total_u):,}** personas con formación universitaria. 
+> Si tu gráfica de ingresos muestra que este grupo sigue ganando cerca del salario mínimo, estamos ante la prueba estadística de que **el título ya no es garantía de movilidad social inmediata** en México.
 """)
 
 #------------------- 📦 DIAGRAMA DE CAJAS: DISPERSIÓN SALARIAL SEPARADA ---------------------
