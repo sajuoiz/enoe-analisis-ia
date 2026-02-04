@@ -148,6 +148,11 @@ fig_coef = go.Figure(go.Bar(
 fig_coef.update_layout(title="Impacto Relativo de las Variables", template="plotly_white", yaxis_title="Variables", xaxis_title="Dirección y Peso de cada variable en el modelo")
 st.plotly_chart(fig_coef, use_container_width=True)
 
+st.info("""
+**Dato:** Esta gráfca solo refleja la dirección del impacto de cada variable en la probabilidad de empleo, no la probabilidad real.
+        Permite observar que variables tienen mayor impacto positivo o negativo en la probabilidad de empleo.
+""")
+
 # --- GRÁFICA 3: SIMULADOR ---
 st.divider()
 st.header("📉 Simulador: El 'Impuesto' a la Maternidad")
