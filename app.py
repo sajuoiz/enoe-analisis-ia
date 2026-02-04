@@ -120,6 +120,48 @@ st.info("""
         Lo cual rompe la idea de que las mujeres solo enfrentan dificultades laborales en edades de maternidad.
 """)
 
+# --- SECCIÓN: DEMOGRAFÍA TOTAL (Nacional) ---
+st.divider()
+st.subheader("🌐 Universo de Análisis: Población 15+")
+
+@st.cache_data
+def calcular_poblacion_total(_df):
+    # Filtrar población de 15 años y más (excluyendo no especificados 99)
+    df_15 = _df[(_df['eda'] >= 15) & (_df['eda'] < 99)].copy()
+    
+    # Calcular totales ponderados por factor de expansión
+    pob_sexo = df_15.groupby('sex')['fac_tri'].sum()
+    
+    hombres = pob_sexo.get(1, 0)
+    mujeres = pob_sexo.get(2, 0)
+    total = hombres + mujeres
+    
+    return hombres, mujeres, total
+
+# Obtener los valores
+h_total, m_total, nacional_total = calcular_poblacion_total(df)
+
+# Mostrar en columnas con estilo de Dashboard
+c1, c2, c3 = st.columns(3)
+
+with c1:
+    st.metric("Población Total (15+)", f"{int(nacional_total):,}")
+    st.caption("Universo total de ciudadanos en edad laboral.")
+
+with c2:
+    st.metric("Hombres 👨", f"{int(h_total):,}")
+    st.write(f"({(h_total/nacional_total*100):.1f}% del total)")
+
+with c3:
+    st.metric("Mujeres 👩", f"{int(m_total):,}")
+    st.write(f"({(m_total/nacional_total*100):.1f}% del total)")
+
+# Mensaje para tu video de TikTok
+st.info(f"""
+💡 **Dato clave para el cierre:** Este análisis representa a un universo de **{int(nacional_total):,}** mexicanos. 
+Para que una opinión personal sea estadísticamente relevante frente a este número, debería estar respaldada por una muestra técnica, no por anécdotas.
+""")
+
 # --- GRÁFICA 2: COEFICIENTES ---
 st.divider()
 st.header("🧠 Modelo de ML: Regresión Logística")
