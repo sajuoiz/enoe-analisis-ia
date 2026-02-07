@@ -158,7 +158,7 @@ with c3:
 
 # Mensaje para tu video de TikTok
 st.info(f"""
-💡 **Dato clave para el cierre:** Este análisis representa a un universo de **{int(nacional_total):,}** mexicanos. 
+💡 **Dato clave:** Este análisis representa a un universo de **{int(nacional_total):,}** mexicanos. 
 Para que una opinión personal sea estadísticamente relevante frente a este número, debería estar respaldada por una muestra técnica, no por anécdotas.
 """)
 
